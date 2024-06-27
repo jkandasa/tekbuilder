@@ -77,7 +77,7 @@ questions:
     group: "argocd_config"
     required: true
     prompt:
-      message: "Application deployment manifest git url"
+      message: "Project deployment manifest git url"
 
   # k8s resource path
   - name: "k8s_resource_path"
