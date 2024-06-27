@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "{{ .Scaffold.Project }}"
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "{{ .Scaffold.git_provider_url }}"
+    path: "{{ .Scaffold.k8s_resource_path }}"
+    targetRevision: HEAD
+    directory:
+      recurse: true
+  destination:
+    namespace: "{{ .Scaffold.cd_namespace }}"
+    server: https://kubernetes.default.svc

@@ -1,0 +1,88 @@
+messages:
+  pre: |
+    # Tekton and Argocd template with pipelines-as-code
+
+    This project generates ready to use tekton, argocd, and pipelines-as-code resources for a Dockerfile based project
+  post: |
+    # Congratulations!
+    # You've generated tekton and argocd based CI/CD setup for your project!
+    
+    * Place `{{ .Scaffold.Project}}/.tekton` on root of the {{ .Scaffold.git_provider_url }}
+    * Place `{{ .Scaffold.Project}}/{{ .Scaffold.k8s_resource_path }}` on root of the {{ .Scaffold.k8s_git_provider_url }}
+    * Deploy argocd application manifest on your cluster by executing,
+     `kubectl create --file {{ .Scaffold.Project}}/argocd/applocation.yaml --namespace {{ .Scaffold.cd_namespace }}`
+    * *NOTE:* Some of the sample resources are places under `{{ .Scaffold.Project }}/extra`,
+        * `git provider secret` for `pipelines-as-code`
+        * `container registry secret` and `service account` for `pipelinerun`
+
+questions:
+  # application source code details
+  # cI namespace
+  - name: "ci_namespace"
+    group: "git_provider"
+    required: true
+    prompt:
+      message: "CI namespace in the cluster"
+
+  # git repository URL
+  - name: "git_provider_url"
+    group: "git_provider"
+    required: true
+    prompt:
+      message: "Application source code git url"
+
+  # git provider secret on the cluster
+  - name: "git_provider_secret"
+    group: "git_provider"
+    required: true
+    prompt:
+      message: "git 'provider.token', 'webhook.secret' secret name on the cluster"
+
+  # git branches to monitor
+  - name: "git_provider_branch"
+    group: "git_provider"
+    required: true
+    prompt:
+      message: "Branches to monitor"
+      loop: true
+      default: ["main"]
+
+  # git events to monitor
+  - name: "git_provider_event"
+    group: "git_provider"
+    required: true
+    prompt:
+      message: "Events to monitor"
+      loop: true
+      default: [pull_request, push]
+
+  # container image
+  - name: "container_image_name"
+    group: "git_provider"
+    required: true
+    prompt:
+      message: "Container image name"
+      description: This image name will be used to push on ci and pull on cd
+
+  # Application deployment details
+  # CD namespace
+  - name: "cd_namespace"
+    group: "argocd_config"
+    required: true
+    prompt:
+      message: "CD namespace, used to deploy the application"
+
+  # k8s git repository URL
+  - name: "k8s_git_provider_url"
+    group: "argocd_config"
+    required: true
+    prompt:
+      message: "Application deployment manifest git url"
+
+  # k8s resource path
+  - name: "k8s_resource_path"
+    group: "argocd_config"
+    required: true
+    prompt:
+      message: "manifest directory path"
+      default: "./k8s"

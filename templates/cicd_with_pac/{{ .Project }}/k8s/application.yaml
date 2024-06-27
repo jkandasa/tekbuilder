@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "{{ .Scaffold.Project }}"
+  name: "{{ .Scaffold.Project }}"
+  namespace: "{{ .Scaffold.cd_namespace }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Scaffold.Project }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Scaffold.Project }}"
+    spec:
+      containers:
+      - name: "{{ .Scaffold.Project}}"
+        image: "{{ .Scaffold.container_image_name }}"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "50m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Scaffold.Project }}"
+  namespace: "{{ .Scaffold.cd_namespace }}"
+  labels:
+    app: "{{ .Scaffold.Project }}"
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: "{{ .Scaffold.Project }}"
+  type: ClusterIP

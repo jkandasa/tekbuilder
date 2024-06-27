@@ -1,0 +1,14 @@
+apiVersion: pipelinesascode.tekton.dev/v1alpha1
+kind: Repository
+metadata:
+  name: "{{ .Scaffold.Project }}"
+  namespace: "{{ .Scaffold.ci_namespace }}"
+spec:
+  url: "{{ .Scaffold.git_provider_url }}"
+  git_provider:
+    secret:
+      key: provider.token
+      name: "{{ .Scaffold.git_provider_secret }}"
+    webhook_secret:
+      key: webhook.secret
+      name: "{{ .Scaffold.git_provider_secret }}"
